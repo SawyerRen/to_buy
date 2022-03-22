@@ -24,4 +24,7 @@ urlpatterns = [
 
     # 商品
     path('store/', include('store.urls'))
+
+    # 客户
+    path('customers/', include('customers.urls'))
 ]
