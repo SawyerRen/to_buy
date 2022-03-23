@@ -4,12 +4,12 @@ from utils.get_hash import get_hash
 
 
 class UserManager(models.Manager):
-    def add_passport(self, username, password, email,gender):
+    def add_user(self, username, password, email,gender):
         '''add a new user'''
         passport = self.create(username=username, password=get_hash(password), email=email,gender=gender)
         return passport
 
-    def get_passport(self, username, password):
+    def get_user(self, username, password):
         try:
             passport = self.get(username=username, password=get_hash(password))
         except self.model.DoesNotExist:
@@ -43,7 +43,7 @@ class User(BaseModel):
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE)
     membership_expire_time = models.DateTimeField()
 
-    objects=PassportManager()
+    objects=UserManager()
     class Meta:
         managed = False
         db_table = 'User'
