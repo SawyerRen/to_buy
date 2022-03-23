@@ -3,8 +3,39 @@ from utils.models import BaseModel
 
 
 # Create your models here.
+class Membership(BaseModel):
+    level = models.IntegerField()
+    discount = models.DecimalField(
+        max_digits=6,
+        decimal_places=2)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    price = models.DecimalField(
+        max_digits=6,
+        decimal_places=2)
+
+    class Meta:
+        managed = False
+        db_table = 'Membership'
+
+
+class User(BaseModel):
+    name = models.CharField(max_length=255)
+    password = models.CharField(max_length=255)
+    phone_number = models.CharField(max_length=255)
+    email = models.CharField(max_length=255)
+    GENDER = [(1, 'Male'), (0, 'Female')]
+    gender = models.SmallIntegerField(choices=GENDER, default=0)
+    membership = models.ForeignKey(Membership, on_delete=models.CASCADE)
+    membership_expire_time = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'User'
+
+
 class Address(BaseModel):
-    user_id = models.IntegerField()
+    # user_id = models.IntegerField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     receiver_first_name = models.CharField(max_length=255)
     receiver_last_name = models.CharField(max_length=255)
     state = models.CharField(max_length=255)
@@ -21,38 +52,8 @@ class Address(BaseModel):
         db_table = 'Address'
 
 
-class User(BaseModel):
-    name = models.CharField(max_length=255)
-    password = models.CharField(max_length=255)
-    phone_number = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
-    GENDER = [(1, 'Male'), (0, 'Female')]
-    gender = models.SmallIntegerField(choices=GENDER, default=0)
-    membership_level = models.IntegerField()
-    membership_expire_time = models.DateTimeField()
-
-    class Meta:
-        managed = False
-        db_table = 'User'
-
-
-class Membership(BaseModel):
-    level = models.IntegerField()
-    discount = models.models.DecimalField(
-        max_digits=6,
-        decimal_places=2)
-    description = models.CharField(max_length=255, blank=True, null=True)
-    price = models.models.models.DecimalField(
-        max_digits=6,
-        decimal_places=2)
-
-    class Meta:
-        managed = False
-        db_table = 'Membership'
-
-
 class Payment(BaseModel):
-    user_id = models.IntegerField()
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
     card_number = models.CharField(max_length=255)
 
     class Meta:
