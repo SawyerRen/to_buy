@@ -13,3 +13,4 @@ class GoodsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goods
         fields = "__all__"
+

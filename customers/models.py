@@ -1,5 +1,20 @@
 from django.db import models
 from utils.models import BaseModel
+from utils.get_hash import get_hash
+
+
+class UserManager(models.Manager):
+    def add_passport(self, username, password, email,gender):
+        '''add a new user'''
+        passport = self.create(username=username, password=get_hash(password), email=email,gender=gender)
+        return passport
+
+    def get_passport(self, username, password):
+        try:
+            passport = self.get(username=username, password=get_hash(password))
+        except self.model.DoesNotExist:
+            passport = None
+        return passport
 
 
 # Create your models here.
@@ -28,10 +43,43 @@ class User(BaseModel):
     membership = models.ForeignKey(Membership, on_delete=models.CASCADE)
     membership_expire_time = models.DateTimeField()
 
+    objects=PassportManager()
     class Meta:
         managed = False
         db_table = 'User'
 
+
+class AddressManager(models.Manager):
+
+    def get_default_address(self, user_id):
+        '''user default address'''
+        try:
+            addr = self.get(user_id=user_id, is_default=True)
+        except self.model.DoesNotExist:
+            # 没有默认收货地址
+            addr = None
+        return addr
+
+    def add_one_address(self, user_id, recipient_first_name, recipient_second_name, state,county,street, zip_code, recipient_phone):
+        # if user has a default address
+        addr = self.get_default_address(user_id=user_id)
+
+        if addr:
+            is_default = False
+        else:
+            is_default = True
+
+        # add a new one
+        addr = self.create(user_id=user_id,
+                           recipient_first_name=recipient_first_name,
+                           recipient_second_name=recipient_second_name,
+                           state=state,
+                           county=county,
+                           street=street,
+                           zip_code=zip_code,
+                           recipient_phone=recipient_phone,
+                           is_default=is_default)
+        return addr
 
 class Address(BaseModel):
     # user_id = models.IntegerField()
