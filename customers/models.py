@@ -34,7 +34,7 @@ class Membership(BaseModel):
 
 
 class User(BaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255,unique=True)
     password = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
     email = models.CharField(max_length=255)
@@ -94,6 +94,7 @@ class Address(BaseModel):
     IS_DEFAULT = [(1, 'Yes'), (0, 'No')]
     is_default = models.SmallIntegerField(choices=IS_DEFAULT,
                                           default=0)
+    objects = AddressManager()
 
     class Meta:
         managed = False

@@ -17,5 +17,5 @@ urlpatterns = [
     url(r'^logout/$', views.logout, name='logout'), # 退出用户登录
     url(r'^address/$', views.address, name='address'),
     url(r'^order/(?P<page>\d+)?/?$', views.order, name='order'),
-    url(r'^$', views.user, name='user'), # 用户中心-信息页
+    url(r'^user', views.user, name='user'), # 用户中心-信息页
 ]
