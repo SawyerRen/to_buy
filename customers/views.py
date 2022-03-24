@@ -1,8 +1,4 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Address, User
 from .serializers import AddressSerializer, UserSerializer
 
@@ -17,3 +13,12 @@ class UserList(ListCreateAPIView):
 class AddressList(ListCreateAPIView):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
+
+class AddressDetail(RetrieveUpdateDestroyAPIView):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+
+
+class UserDetail(RetrieveUpdateDestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
