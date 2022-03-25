@@ -25,8 +25,8 @@ class User(BaseModel):
     email = models.CharField(max_length=255)
     GENDER = [(1, 'Male'), (0, 'Female')]
     gender = models.SmallIntegerField(choices=GENDER, default=0)
-    membership = models.ForeignKey(Membership, on_delete=models.CASCADE)
-    membership_expire_time = models.DateTimeField()
+    membership = models.ForeignKey(Membership, null=True, on_delete=models.SET_NULL)
+    membership_expire_time = models.DateTimeField(null=True)
 
     class Meta:
         managed = False
@@ -53,7 +53,7 @@ class Address(BaseModel):
 
 
 class Payment(BaseModel):
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='payments')
     card_number = models.CharField(max_length=255)
 
     class Meta:
