@@ -22,7 +22,7 @@ class User(BaseModel):
     name = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
-    email = models.CharField(max_length=255)
+    email = models.CharField(max_length=255, unique=True)
     GENDER = [(1, 'Male'), (0, 'Female')]
     gender = models.SmallIntegerField(choices=GENDER, default=0)
     membership = models.ForeignKey(Membership, null=True, on_delete=models.SET_NULL)
