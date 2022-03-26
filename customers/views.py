@@ -1,20 +1,41 @@
-from django.shortcuts import render
-from django.shortcuts import get_object_or_404
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .models import Address, User
-from .serializers import AddressSerializer, UserSerializer
+from .models import Address, User, Payment
+from .serializers import AddressSerializer, UserSerializer, PaymentSerializer
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from .pagination import DefaultPagination
 
 
 # Create your views here.
-@api_view()
-def address_list(request):
-    queryset = Address.objects.all()
-    serializer = AddressSerializer(queryset, many=True)
-    return Response(serializer.data)
 
-@api_view()
-def user_list(request):
+
+class AddressViewSet(ModelViewSet):
+    queryset = Address.objects.all()
+    serializer_class = AddressSerializer
+    pagination_class = DefaultPagination
+
+
+class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
-    serializer = UserSerializer(queryset, many=True)
-    return Response(serializer.data)
+    serializer_class = UserSerializer
+    pagination_class = DefaultPagination
+
+
+    def create(self, request, *args, **kwargs):
+        if 'membership' not in request.data:
+            request.data['membership'] = 1
+        print(request.data)
+        return super().create(request, *args, **kwargs)
+
+
+class PaymentViewSet(ModelViewSet):
+    serializer_class = PaymentSerializer
+
+    def get_queryset(self):
+        return Payment.objects.filter(user_id=self.kwargs['user_pk'])
+
+    def create(self, request, *args, **kwargs):
+        request.data['user'] = self.kwargs['user_pk']
+        return super().create(request, *args, **kwargs)
+
+
