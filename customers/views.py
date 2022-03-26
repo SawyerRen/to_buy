@@ -1,6 +1,8 @@
 from .models import Address, User, Payment
 from .serializers import AddressSerializer, UserSerializer, PaymentSerializer
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from .pagination import DefaultPagination
 
 
@@ -17,6 +19,7 @@ class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = DefaultPagination
+
 
     def create(self, request, *args, **kwargs):
         if 'membership' not in request.data:

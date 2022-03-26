@@ -1,47 +1,77 @@
+from django.db.models import Count
 from django.shortcuts import render
 from rest_framework import status
+from rest_framework.generics import get_object_or_404
+from rest_framework.mixins import CreateModelMixin, RetrieveModelMixin, DestroyModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Category, Goods
-from .serializers import CategorySerializer, GoodsSerializer
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
+from .models import Category, Goods, CartItem, Cart
+from .serializers import CategorySerializer, GoodsSerializer, CartSerializer, AddCartItemSerializer, UpdateCartItemSerializer, CartItemSerializer
+from store.pagination import DefaultPagination
+from .filters import GoodsFilter
 
 
 # Create your views here.
 
 # 品类列表
-class CategoryListView(APIView):
-    def get(self, request):
-        try:
-            category_list = Category.objects.all()
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
+class CategoryViewSet(ModelViewSet):
+    queryset = Category.objects.annotate(goods_count=Count('goods')).all()
+    serializer_class = CategorySerializer
+    pagination_class = DefaultPagination
 
-        ser = CategorySerializer(instance=category_list, many=True)
-        return Response(ser.data)
+    def destroy(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        c = category.goods.count()
+        print(c)
+        if c > 0:
+            return Response({'error': 'Category cannot be deleted because it includes one or more products'},
+                            status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        category.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# 商品列表
-class GoodsListView(APIView):
-    def get(self, request):
-        print(request.query_params.dict())
-        category_id = request.query_params.dict().get('category_id')  # category id为0时获取全部商品，否则按品类查询
-        page = request.query_params.dict().get('page')  # 页数
-        page_size = request.query_params.dict().get('page_size')  # 页面大小
+class GoodsViewSet(ModelViewSet):
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+    pagination_class = DefaultPagination
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ['name', 'description']
+    ordering_fields = ['price']
+    filterset_class = GoodsFilter
 
-        if category_id is None:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+    def destroy(self, request, pk):
+        goods = get_object_or_404(Goods, pk=pk)
+        print(goods.orderitems.count())
+        if goods.orderitems.count() > 0:
+            return Response({'error': 'Product cannot be deleted because it is associated with an order item.'},
+                            status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        goods.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
 
-        category_id = int(category_id)
-        page = int(page)
-        page_size = int(page_size)
-        offset = (page - 1) * page_size
-        try:
-            if category_id != 0:
-                goods_list = Goods.objects.filter(category_id=category_id)[offset:offset + page_size]
-            else:
-                goods_list = Goods.objects.all()[offset:offset + page_size]
-        except:
-            return Response(status=status.HTTP_404_NOT_FOUND)
 
-        ser = GoodsSerializer(instance=goods_list, many=True)
-        return Response(ser.data)
+class CartViewSet(CreateModelMixin,
+                  RetrieveModelMixin,
+                  DestroyModelMixin,
+                  GenericViewSet):  # because we don't need to support other functions yet
+    serializer_class = CartSerializer
+    queryset = Cart.objects.prefetch_related('items__goods').all()
+
+
+class CartItemViewSet(ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return AddCartItemSerializer
+        elif self.request.method == 'PATCH':
+            return UpdateCartItemSerializer
+        return CartItemSerializer
+
+    def get_serializer_context(self):
+        return {'cart_id': self.kwargs['cart_pk']}
+
+    def get_queryset(self):
+        return CartItem.objects.filter(cart_id=self.kwargs['cart_pk']).select_related('goods')
