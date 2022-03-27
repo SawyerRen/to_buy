@@ -18,20 +18,20 @@ class GoodsSerializer(serializers.ModelSerializer):
                   'category']
 
 
-class CartItemSerializer(serializers.ModelSerializer):
+class CartItemSerializer(serializers.ModelSerializer): # get method for Cart details
     goods = GoodsSerializer()
 
     class Meta:
         model = CartItem
         fields = ['id', 'goods', 'quantity', 'total_price']
 
-    def get_total_price(self, cartitem: CartItem):
+    def get_total_price(self, cartitem: CartItem): # calculate total price for the cart
         return cartitem.quantity * cartitem.goods.price
 
     total_price = serializers.SerializerMethodField(method_name='get_total_price')
 
 
-class UpdateCartItemSerializer(serializers.ModelSerializer):
+class UpdateCartItemSerializer(serializers.ModelSerializer): # serializer for updating the cart
     class Meta:
         model = CartItem
         fields = ['quantity']
@@ -44,13 +44,13 @@ class AddCartItemSerializer(serializers.ModelSerializer):
         model = CartItem
         fields = ['id', 'goods_id', 'quantity']
 
-    def validate_product_id(self, value): # define custom validate methods
+    def validate_product_id(self, value): # define custom validate methods, notice the naming convention
         if not Goods.objects.filter(pk=value).exists():
             raise serializers.ValidationError('No product with the given goods_id')
         return value
 
-    def save(self, **kwargs):
-        cart_id = self.context['cart_id']
+    def save(self, **kwargs): # define custom save method
+        cart_id = self.context['cart_id'] # this cart_id is from the nested url, should be sent as context from views
         goods_id = self.validated_data['goods_id']
         quantity = self.validated_data['quantity']
 
