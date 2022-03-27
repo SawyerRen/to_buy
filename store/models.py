@@ -57,13 +57,13 @@ class CartItem(models.Model):
     class Meta:
         unique_together = [['cart', 'goods']]  # make sure that a cart has unique product
         managed = False
-        db_table = 'CartItem'
+        db_table = 'Cartitem'
 
 
 class Order(BaseModel):
-    user_id = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
+    user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     status = models.SmallIntegerField()
-    receiver_address_id = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='orders')
+    receiver_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='orders')
     estimated_arrival_time = models.DateTimeField(null=True)
     arrival_time = models.DateTimeField(null=True)
 

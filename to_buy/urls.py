@@ -26,5 +26,6 @@ urlpatterns = [
     path('store/', include('store.urls')),
 
     # 客户
-    path('customers/', include('customers.urls'))
+    path('customers/', include('customers.urls')),
+    path('__debug__/', include('debug_toolbar.urls'))
 ]
