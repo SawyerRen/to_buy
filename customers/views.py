@@ -10,16 +10,29 @@ from .pagination import DefaultPagination
 
 
 class AddressViewSet(ModelViewSet):
-    queryset = Address.objects.all()
     serializer_class = AddressSerializer
     pagination_class = DefaultPagination
+
+    def get_queryset(self):
+        return Address.objects.filter(user_id=self.kwargs['user_pk'])
+
+    def create(self, request, *args, **kwargs):
+        request.data['user'] = self.kwargs['user_pk']
+        if 'is_default' in request.data: # make sure there's only 1 default address
+            queryset = self.get_queryset()
+            if queryset.filter(is_default=1):
+                q = queryset.filter(is_default=1)
+                for address in q:
+                    address.is_default = 0
+                    address.save()
+
+        return super().create(request, *args, **kwargs)
 
 
 class UserViewSet(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     pagination_class = DefaultPagination
-
 
     def create(self, request, *args, **kwargs):
         if 'membership' not in request.data:

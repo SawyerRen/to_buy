@@ -86,8 +86,8 @@ DATABASES = {
         'HOST': 'localhost',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': '123456',
-        'NAME': 'to_buy本地'
+        'PASSWORD': 'zsj19971125',
+        'NAME': 'to_buy'
     }
 }
 
