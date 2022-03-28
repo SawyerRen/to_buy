@@ -107,7 +107,6 @@ class CartItemViewSet(ModelViewSet):
     def create(self, request, *args, **kwargs):
         goods_id = self.request.data['goods']
         user_id = self.request.data['user']
-        queryset = self.get_queryset()
         try:
             cartitem = CartItem.objects.get(goods_id=goods_id, user_id=user_id)
             cartitem.quantity += self.request.data['quantity']
