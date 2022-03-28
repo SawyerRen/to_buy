@@ -36,26 +36,26 @@ class Goods(BaseModel):
         db_table = 'Goods'
 
 
-class Cart(models.Model):
-    # because the cart endpoint is not secure, so we use this uuid4 instead of simple integer
-    id = models.UUIDField(primary_key=True, default=uuid4)
-    created_at = models.DateTimeField(auto_now_add=True)
+# class Cart(models.Model):
+#     # because the cart endpoint is not secure, so we use this uuid4 instead of simple integer
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     created_at = models.DateTimeField(auto_now_add=True)
+#
+#     class Meta:
+#         managed = False
+#         db_table = 'Cart'
 
-    class Meta:
-        managed = False
-        db_table = 'Cart'
 
-
-class CartItem(models.Model):
+class CartItem(BaseModel):
     quantity = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)]
     )
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cartitems')
     goods = models.ForeignKey(Goods, on_delete=models.CASCADE, related_name='cartitems')
 
 
     class Meta:
-        unique_together = [['cart', 'goods']]  # make sure that a cart has unique product
+        unique_together = [['user', 'goods']]  # make sure that a cart has unique product
         managed = False
         db_table = 'Cartitem'
 

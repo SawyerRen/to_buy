@@ -7,13 +7,12 @@ from rest_framework_nested import routers
 router = routers.DefaultRouter()
 router.register('categories', views.CategoryViewSet, basename='categories')
 router.register('goods', views.GoodsViewSet, basename='goods')
-router.register('carts', views.CartViewSet)
+router.register('cartitems', views.CartItemViewSet, basename='cartitems')
 
-carts_router = routers.NestedDefaultRouter(router, 'carts', lookup='cart')
-carts_router.register('cartitems', views.CartItemViewSet, basename='cart-cartitems')
+# carts_router = routers.NestedDefaultRouter(router, 'carts', lookup='user')
+# carts_router.register('cartitems', views.CartItemViewSet, basename='cart-cartitems')
 
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('', include(carts_router.urls))
+    path('', include(router.urls))
 ]
