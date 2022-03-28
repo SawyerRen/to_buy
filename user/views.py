@@ -14,7 +14,6 @@ class RegisterCheckView(APIView):
     def get(self, request):
         email = request.GET.get('email')
         phone_number = request.GET.get('phone_number')
-        print(email, phone_number)
         count = User.objects.filter(Q(email=email) | Q(phone_number=phone_number)).count()
 
         data = {
@@ -22,7 +21,6 @@ class RegisterCheckView(APIView):
             'phone_number': phone_number,
             'count': count
         }
-        print(count)
         return Response(data)
 
 
@@ -30,10 +28,10 @@ class RegisterView(APIView):
     def post(self, request):
         data = request.data
         ser = RegisterSerializer(data=data)
+        # 判断密码是否相同
         ser.is_valid(raise_exception=True)
         user = ser.save()
         user_ser = UserSerializer(user)
-        request.session["user_id"] = user.id
         return Response(user_ser.data, status=status.HTTP_201_CREATED)
 
 
@@ -51,5 +49,4 @@ class LoginView(APIView):
             return Response("wrong password", status=status.HTTP_400_BAD_REQUEST)
 
         ser = UserSerializer(instance=user)
-        request.session["user_id"] = user.id
         return Response(ser.data)
