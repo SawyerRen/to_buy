@@ -23,5 +23,7 @@ urlpatterns = [
     path("docs/", include_docs_urls(title="to buy 文档")),
 
     # 商品
-    path('', include('goods.urls'))
+    path('', include('goods.urls')),
+    # 用户
+    path('', include('user.urls'))
 ]
