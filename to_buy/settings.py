@@ -37,7 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'goods'
+    'goods',
+    'user'
 ]
 
 MIDDLEWARE = [
@@ -77,12 +78,20 @@ WSGI_APPLICATION = 'to_buy.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'HOST': '146.148.61.251',
+    #     'PORT': 3306,
+    #     'USER': 'root',
+    #     'PASSWORD': '123456',
+    #     'NAME': 'to_buy'
+    # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '146.148.61.251',
+        'HOST': '127.0.0.1',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': 'rensy971121',
         'NAME': 'to_buy'
     }
 }
