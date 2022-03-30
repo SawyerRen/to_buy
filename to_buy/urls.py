@@ -27,5 +27,7 @@ urlpatterns = [
 
     # 客户
     path('customers/', include('customers.urls')),
-    path('__debug__/', include('debug_toolbar.urls'))
+    path('__debug__/', include('debug_toolbar.urls')),
+
+    path('user/', include('user.urls'))
 ]
