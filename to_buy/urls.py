@@ -23,7 +23,11 @@ urlpatterns = [
     path("docs/", include_docs_urls(title="to buy 文档")),
 
     # 商品
-    path('', include('goods.urls')),
-    # 用户
-    path('', include('user.urls'))
+    path('store/', include('store.urls')),
+
+    # 客户
+    path('customers/', include('customers.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
+
+    path('account/', include('account.urls'))
 ]

@@ -24,7 +24,9 @@ SECRET_KEY = 'django-insecure-fk$k1&nrb&1xedef65g+q1w)d3##_pfb7sm3gy+h-va0bzuvs4
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS = ["*", ]
+
 
 # Application definition
 
@@ -37,11 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'corsheaders',
     'rest_framework',
-    'goods',
-    'user'
+    'store',
+    'customers',
+    'django_filters',
+    'debug_toolbar',
+    'account'
 ]
 
 MIDDLEWARE = [
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'corsheaders.middleware.CorsMiddleware',
@@ -78,21 +84,13 @@ WSGI_APPLICATION = 'to_buy.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'HOST': '146.148.61.251',
-    #     'PORT': 3306,
-    #     'USER': 'root',
-    #     'PASSWORD': '123456',
-    #     'NAME': 'to_buy'
-    # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': 'rensy971121',
-        'NAME': 'to_buy'
+        'PASSWORD': '123456',
+        'NAME': 'to_buy本地'
     }
 }
 
@@ -142,5 +140,12 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 
     # 分页
-    'DEFAULT_PAGINATION_CLASS': 'utils.pagination.StandardResultsSetPagination',
+
+
 }
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
+    # ...
+]
+
