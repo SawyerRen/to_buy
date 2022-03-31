@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'customers',
     'django_filters',
     'debug_toolbar',
-    'account'
+    'user'
 ]
 
 MIDDLEWARE = [
