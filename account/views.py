@@ -5,7 +5,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q
-from .serializers import RegisterSerializer, UserSerializer
+from .serializers import RegisterSerializer
+from customers.serializers import UserSerializer
 
 from customers.models import User
 
