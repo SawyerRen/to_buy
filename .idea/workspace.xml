@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f194a1da-9660-4e0f-a47b-c1adaea2fd21" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/文档.md" beforeDir="false" afterPath="$PROJECT_DIR$/文档.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -65,6 +66,7 @@
       <option name="presentableId" value="Default" />
       <updated>1648688001518</updated>
       <workItem from="1648688005612" duration="2789000" />
+      <workItem from="1648764974686" duration="2403000" />
     </task>
     <servers />
   </component>
@@ -81,5 +83,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
