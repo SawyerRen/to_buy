@@ -25,6 +25,8 @@ class AddressViewSet(ModelViewSet):
                 for address in q:
                     address.is_default = 0
                     address.save()
+        else:
+            request.data['is_default']=0
 
         return super().create(request, *args, **kwargs)
 
