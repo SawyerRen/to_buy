@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.db.models import Q
-from .serializers import RegisterSerializer
+from .serializers import RegisterSerializer, ChangePasswordSerializer
 from customers.serializers import UserSerializer
 
 from customers.models import User
@@ -51,3 +51,21 @@ class LoginView(APIView):
 
         ser = UserSerializer(instance=user)
         return Response(ser.data)
+
+
+class ChangePasswordView(APIView):
+    def post(self, request):
+        user_id = request.data.get("user_id")
+        old_password = request.data.get("old_password")
+        try:
+            user = User.objects.get(id=user_id)
+        except:
+            return Response("Cannot find user", status=status.HTTP_404_NOT_FOUND)
+
+        if user.password != old_password:
+            return Response("wrong password", status=status.HTTP_400_BAD_REQUEST)
+        data = request.data
+        ser = ChangePasswordSerializer(instance=user, data=data)
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        return Response(ser.data, status=status.HTTP_201_CREATED)
