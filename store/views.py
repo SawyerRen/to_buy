@@ -82,7 +82,27 @@ class CartItemViewSet(ModelViewSet):
         except CartItem.DoesNotExist:
             return super().create(request, *args, **kwargs)
 
+class frontPageGoodsVewSet(ModelViewSet):
+    sql_str = """ select G.*
+    from Goods G left join (select max(sales) as best_good_sale, count(*) as number, brand
+                            from Goods
+                            where sales >=300
+                            group by brand) as sub1 using (brand)
+    where G.price<=10.00 and sub1.number>=5 and sales=best_good_sale
+    order by G.sales desc
+    limit 15"""
+    queryset = Goods.objects.raw(sql_str)
+    serializer_class = GoodsSerializer
 
+
+    def destroy(self, request, pk):
+        goods = get_object_or_404(Goods, pk=pk)
+        print(goods.orderitems.count())
+        if goods.orderitems.count() > 0:
+            return Response({'error': 'Product cannot be deleted because it is associated with an order item.'},
+                            status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        goods.delete()
+        return Response(status.HTTP_204_NO_CONTENT)
 
 
 
