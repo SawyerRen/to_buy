@@ -10,4 +10,7 @@ urlpatterns = [
     path('register', views.RegisterView.as_view()),
     # 登录
     path('login', views.LoginView.as_view()),
+    # 修改密码
+    path('change_password', views.ChangePasswordView.as_view()),
+
 ]
