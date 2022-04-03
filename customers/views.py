@@ -12,11 +12,13 @@ from .pagination import DefaultPagination
 class AddressViewSet(ModelViewSet):
     serializer_class = AddressSerializer
     pagination_class = DefaultPagination
-
     def get_queryset(self):
-        return Address.objects.filter(user_id=self.kwargs['user_pk'])
+        return Address.objects.filter(user_id=self.kwargs['user_pk']).order_by('-id')
+
 
     def create(self, request, *args, **kwargs):
+        #print(request)
+        #print(request.data)
         request.data['user'] = self.kwargs['user_pk']
         if 'is_default' in request.data: # make sure there's only 1 default address
             queryset = self.get_queryset()
