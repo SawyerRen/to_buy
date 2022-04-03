@@ -26,7 +26,7 @@ class AddressSerializer(serializers.ModelSerializer):
                   'is_default', 'user', 'free_delivery']
 
     def delivery_state(self, address: Address):
-        print(address.state)
+        #print(address.state)
         return address.state in hashtable
 
 
