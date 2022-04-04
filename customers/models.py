@@ -19,6 +19,7 @@ class Membership(BaseModel):
 
 
 class User(BaseModel):
+    id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     password = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
