@@ -84,13 +84,21 @@ WSGI_APPLICATION = 'to_buy.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'HOST': 'localhost',
+    #     'PORT': 3306,
+    #     'USER': 'root',
+    #     'PASSWORD': '123456',
+    #     'NAME': 'to_buy本地'
+    # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': 'localhost',
+        'HOST': '34.69.183.235',
         'PORT': 3306,
         'USER': 'root',
         'PASSWORD': '123456',
-        'NAME': 'to_buy本地'
+        'NAME': 'to_buy'
     }
 }
 
