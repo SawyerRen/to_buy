@@ -36,15 +36,6 @@ class Goods(BaseModel):
         db_table = 'Goods'
 
 
-class Payment(BaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    card_number = models.CharField(max_length=255)
-
-    class Meta:
-        managed = False
-        db_table = 'Payment'
-
-
 class CartItem(BaseModel):
     quantity = models.PositiveSmallIntegerField(
         validators=[MinValueValidator(1)]
