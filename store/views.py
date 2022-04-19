@@ -82,6 +82,7 @@ class CartItemViewSet(ModelViewSet):
         except CartItem.DoesNotExist:
             return super().create(request, *args, **kwargs)
 
+
 class frontPageGoodsVewSet(ModelViewSet):
     sql_str = """ select G.*
     from Goods G left join (select max(sales) as best_good_sale, count(*) as number, brand

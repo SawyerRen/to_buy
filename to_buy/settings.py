@@ -94,10 +94,10 @@ DATABASES = {
     # }
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'HOST': '34.69.183.235',
+        'HOST': 'localhost',
         'PORT': 3306,
         'USER': 'root',
-        'PASSWORD': '123456',
+        'PASSWORD': 'zsj19971125',
         'NAME': 'to_buy'
     }
 }
