@@ -1,5 +1,7 @@
 # -*- coding = utf-8 -*-
 from rest_framework import serializers
+
+from customers.models import Payment
 from .models import Category, Goods, CartItem
 
 
@@ -34,3 +36,5 @@ class CartItemSerializer(serializers.ModelSerializer):
         return cartitem.quantity * cartitem.goods.price * cartitem.goods.discount
 
     total_price = serializers.SerializerMethodField(method_name='get_total_price')
+
+

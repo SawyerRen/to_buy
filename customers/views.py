@@ -51,8 +51,4 @@ class PaymentViewSet(ModelViewSet):
     def get_queryset(self):
         return Payment.objects.filter(user_id=self.kwargs['user_pk'])
 
-    def create(self, request, *args, **kwargs):
-        request.data['user'] = self.kwargs['user_pk']
-        return super().create(request, *args, **kwargs)
-
 
