@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from django.core.validators import MinValueValidator
 from django.db import models
-from customers.models import Address, User
+from customers.models import Address, User, Payment
 
 # Create your models here.
 from utils.models import BaseModel
