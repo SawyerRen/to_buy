@@ -36,14 +36,13 @@ class Goods(BaseModel):
         db_table = 'Goods'
 
 
-# class Cart(models.Model):
-#     # because the cart endpoint is not secure, so we use this uuid4 instead of simple integer
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     created_at = models.DateTimeField(auto_now_add=True)
-#
-#     class Meta:
-#         managed = False
-#         db_table = 'Cart'
+class Payment(BaseModel):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    card_number = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'Payment'
 
 
 class CartItem(BaseModel):
@@ -63,7 +62,9 @@ class CartItem(BaseModel):
 class Order(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
     status = models.SmallIntegerField()
+    discount = models.DecimalField(max_digits=3, decimal_places=2)
     receiver_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='orders')
+    payment = models.ForeignKey(Payment, on_delete=models.PROTECT)
     estimated_arrival_time = models.DateTimeField(null=True)
     arrival_time = models.DateTimeField(null=True)
 
