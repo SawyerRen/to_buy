@@ -24,8 +24,9 @@
   <component name="ChangeListManager">
     <list default="true" id="f194a1da-9660-4e0f-a47b-c1adaea2fd21" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/customers/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/customers/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/pagination.py" beforeDir="false" afterPath="$PROJECT_DIR$/store/pagination.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/store/serializers.py" beforeDir="false" afterPath="$PROJECT_DIR$/store/serializers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/store/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/store/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/store/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/store/views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -50,6 +51,9 @@
   <component name="JupyterTrust" id="cb1988d4-ff2d-429c-b021-0c69717de5b7" />
   <component name="MacroExpansionManager">
     <option name="directoryName" value="14jeks5c" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2783h6up4x0RkOTIFu9TNSkCLRk" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -110,6 +114,8 @@
       <workItem from="1648764974686" duration="2781000" />
       <workItem from="1648776410555" duration="2226000" />
       <workItem from="1648841159061" duration="4952000" />
+      <workItem from="1650402285136" duration="41000" />
+      <workItem from="1650402339745" duration="1317000" />
     </task>
     <servers />
   </component>

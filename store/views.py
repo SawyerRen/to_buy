@@ -8,8 +8,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import Category, Goods, CartItem
-from .serializers import CategorySerializer, GoodsSerializer, CartItemSerializer, AddCartItemSerializer
+from .models import Category, Goods, CartItem, Order, OrderItem
+from .serializers import CategorySerializer, GoodsSerializer, CartItemSerializer, AddCartItemSerializer, \
+    OrderSerializer, OrderItemSerializer
 from store.pagination import DefaultPagination
 from .filters import GoodsFilter
 
@@ -106,5 +107,14 @@ class frontPageGoodsVewSet(ModelViewSet):
         return Response(status.HTTP_204_NO_CONTENT)
 
 
+class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.prefetch_related('orderitems__goods').all()
+    serializer_class = OrderSerializer
 
+
+class OrderItemViewSet(ModelViewSet):
+    serializer_class = OrderItemSerializer
+
+    def get_queryset(self):
+        return OrderItem.objects.filter(order_id=self.kwargs['order_pk']).selected_related('goods')
 
