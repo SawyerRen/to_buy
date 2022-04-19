@@ -52,8 +52,8 @@ class CartItem(BaseModel):
 
 class Order(BaseModel):
     user = models.ForeignKey(User, on_delete=models.PROTECT, related_name='orders')
-    status = models.SmallIntegerField()
-    discount = models.DecimalField(max_digits=3, decimal_places=2)
+    status = models.SmallIntegerField(default=0)
+    discount = models.FloatField(default=1)
     receiver_address = models.ForeignKey(Address, on_delete=models.PROTECT, related_name='orders')
     payment = models.ForeignKey(Payment, on_delete=models.PROTECT)
     estimated_arrival_time = models.DateTimeField(null=True)

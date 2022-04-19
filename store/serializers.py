@@ -1,6 +1,6 @@
 # -*- coding = utf-8 -*-
 from rest_framework import serializers
-
+from django.db import transaction
 from customers.models import Payment
 from .models import Category, Goods, CartItem, Order, OrderItem
 
@@ -43,20 +43,40 @@ class OrderItemSerializer(serializers.ModelSerializer):
         model = OrderItem
         fields = ['goods', 'quantity', 'order_price', 'total_price']
 
+    total_price = serializers.SerializerMethodField(method_name='get_total_price')
+    goods = GoodsSerializer(read_only=True)
+
     def get_total_price(self, order_item: OrderItem):
         return order_item.quantity * order_item.order_price
 
 
 class OrderSerializer(serializers.ModelSerializer):
-    def get_total_price(self, order: Order):
-        return sum([item.quantity * item.order_price for item in order.orderitems.all()]) * order.discount
+    # def get_total_price(self, order: Order):
+    #     return sum([item.quantity * item.order_price for item in order.orderitems.all()]) * order.discount
 
     id = serializers.IntegerField(read_only=True)
-    goods = OrderItemSerializer(read_only=True, many=True)
-    total_price = serializers.SerializerMethodField(method_name='get_total_price')
+    orderitems = OrderItemSerializer(many=True, read_only=True)
+    # total_price = serializers.SerializerMethodField(method_name='get_total_price')
 
 
     class Meta:
         model = Order
-        fields = ['id', 'goods', 'user', 'status', 'discount', 'receiver_address',
+        fields = ['id', 'orderitems', 'user', 'status', 'discount', 'receiver_address',
                   'payment', 'estimated_arrival_time', 'arrival_time']
+
+
+class CreateOrderSerializer(serializers.Serializer):
+    user_id = serializers.IntegerField()
+
+    def save(self, **kwargs):
+        with transaction.atomic():
+            order = Order.objects.create(user_id=self.validated_data['user_id'])
+            cart_items = CartItem.objects.select_related('goods')\
+                .filter(user_id=self.validated_data['user_id'])
+            order_items = [
+                OrderItem(order=order, goods=item.goods, order_price=item.goods.price, quantity=item.quantity)
+                for item in cart_items
+            ]
+            OrderItem.objects.bulk_create(order_items)
+            CartItem.objects.filter(user_id=self.validated_data['user_id']).delete()
+        return order

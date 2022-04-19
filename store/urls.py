@@ -11,8 +11,6 @@ router.register('front_recommend',views.frontPageGoodsVewSet,basename="front_rec
 router.register('cartitems', views.CartItemViewSet, basename='cartitems')
 router.register('orders', views.OrderViewSet, basename='orders')
 
-orders_router = routers.NestedDefaultRouter(router, 'orders', lookup='order')
-orders_router.register('items', views.OrderItemViewSet, basename='order-items')
 
 urlpatterns = [
     path('', include(router.urls))

@@ -10,7 +10,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import Category, Goods, CartItem, Order, OrderItem
 from .serializers import CategorySerializer, GoodsSerializer, CartItemSerializer, AddCartItemSerializer, \
-    OrderSerializer, OrderItemSerializer
+    OrderSerializer, OrderItemSerializer, CreateOrderSerializer
 from store.pagination import DefaultPagination
 from .filters import GoodsFilter
 
@@ -108,13 +108,19 @@ class frontPageGoodsVewSet(ModelViewSet):
 
 
 class OrderViewSet(ModelViewSet):
-    queryset = Order.objects.prefetch_related('orderitems__goods').all()
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return CreateOrderSerializer
+        return OrderSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = CreateOrderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        order = serializer.save()
+        serializer = OrderSerializer(order)
+        return Response(serializer.data)
+
     serializer_class = OrderSerializer
+    queryset = Order.objects.all()
 
-
-class OrderItemViewSet(ModelViewSet):
-    serializer_class = OrderItemSerializer
-
-    def get_queryset(self):
-        return OrderItem.objects.filter(order_id=self.kwargs['order_pk']).selected_related('goods')
 
