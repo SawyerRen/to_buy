@@ -1,3 +1,5 @@
+import http.client
+
 from django.db.models import Count
 from django.shortcuts import render
 from rest_framework import status
@@ -117,8 +119,11 @@ class OrderViewSet(ModelViewSet):
         serializer = CreateOrderSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         order = serializer.save()
-        serializer = OrderSerializer(order)
-        return Response(serializer.data)
+        if order:
+            serializer = OrderSerializer(order)
+            return Response(serializer.data)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
     serializer_class = OrderSerializer
     queryset = Order.objects.all()

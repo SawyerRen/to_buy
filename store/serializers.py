@@ -70,13 +70,16 @@ class CreateOrderSerializer(serializers.Serializer):
 
     def save(self, **kwargs):
         with transaction.atomic():
-            order = Order.objects.create(user_id=self.validated_data['user_id'])
-            cart_items = CartItem.objects.select_related('goods')\
+            cart_items = CartItem.objects.select_related('goods') \
                 .filter(user_id=self.validated_data['user_id'])
-            order_items = [
-                OrderItem(order=order, goods=item.goods, order_price=item.goods.price, quantity=item.quantity)
-                for item in cart_items
-            ]
-            OrderItem.objects.bulk_create(order_items)
-            CartItem.objects.filter(user_id=self.validated_data['user_id']).delete()
+            if len(cart_items) > 0:
+                order = Order.objects.create(user_id=self.validated_data['user_id'])
+                order_items = [
+                    OrderItem(order=order, goods=item.goods, order_price=item.goods.price, quantity=item.quantity)
+                    for item in cart_items
+                ]
+                OrderItem.objects.bulk_create(order_items)
+                CartItem.objects.filter(user_id=self.validated_data['user_id']).delete()
+            else:
+                order = None
         return order
