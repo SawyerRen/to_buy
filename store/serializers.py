@@ -2,7 +2,7 @@
 from rest_framework import serializers
 from django.db import transaction
 from customers.models import Payment
-from .models import Category, Goods, CartItem, Order, OrderItem, GoodsTable
+from .models import Category, Goods, CartItem, Order, OrderItem
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -18,12 +18,6 @@ class GoodsSerializer(serializers.ModelSerializer):
         model = Goods
         fields = ['id', 'name', 'description', 'price', 'brand', 'inventory', 'sales', 'image_url', 'discount',
                   'category']
-
-
-class GoodsTableSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = GoodsTable
-        fields = ['id', 'is_hot', 'name', 'description', 'price', 'brand', 'inventory', 'sales', 'image_url', 'discount', 'category']
 
 
 class AddCartItemSerializer(serializers.ModelSerializer):

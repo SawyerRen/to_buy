@@ -10,9 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import Category, Goods, CartItem, Order, OrderItem, GoodsTable
+from .models import Category, Goods, CartItem, Order, OrderItem
 from .serializers import CategorySerializer, GoodsSerializer, CartItemSerializer, AddCartItemSerializer, \
-    OrderSerializer, OrderItemSerializer, CreateOrderSerializer, GoodsTableSerializer
+    OrderSerializer, OrderItemSerializer, CreateOrderSerializer
 from store.pagination import DefaultPagination
 from .filters import GoodsFilter
 
@@ -36,25 +36,25 @@ class CategoryViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-name_map = {'name':'name', 'description':'description',
-            'price':'price', 'category_id' :'category_id', 'brand':'brand',
-            'inventory' :'inventory', 'sales':'sales', 'image_url':'image_url',
-            'discount':'discount','is_deleted':'is_deleted', 'created_at':'created_at','updated_at':'updated_at'
-            }
+class BestSellerViewSet(ModelViewSet):
+    serializer_class = GoodsSerializer
+    queryset = Goods.objects.all()
+    serializer_class = GoodsSerializer
+    pagination_class = DefaultPagination
 
 
-class GoodsTableViewSet(ModelViewSet):
-    sql = """
-    CALL GetGoods()
-    """
-    queryset = GoodsTable.objects.raw(sql)
-    serializer_class = GoodsTableSerializer
+
+    def get_queryset(self):
+        category_id = self.request.query_params.dict().get('category_id')
+        if category_id is None:
+            return Goods.objects.filter(sales__gt=1000)
+        category_id = int(category_id)
+        sql = "CALL GetGoods({})".format(category_id)
+        q = Goods.objects.raw(sql)
+        return q
 
 
 class GoodsViewSet(ModelViewSet):
-    sql = """
-    CALL GetGoods()
-    """
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializer
     pagination_class = DefaultPagination
