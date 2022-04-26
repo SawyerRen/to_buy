@@ -42,12 +42,10 @@ class BestSellerViewSet(ModelViewSet):
     serializer_class = GoodsSerializer
     pagination_class = DefaultPagination
 
-
-
     def get_queryset(self):
         category_id = self.request.query_params.dict().get('category_id')
         if category_id is None:
-            return Goods.objects.filter(sales__gt=1000)
+            return Goods.objects.filter(sales__gt=1800)
         category_id = int(category_id)
         sql = "CALL GetGoods({})".format(category_id)
         q = Goods.objects.raw(sql)
