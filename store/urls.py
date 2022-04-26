@@ -10,6 +10,7 @@ router.register('goods', views.GoodsViewSet, basename='goods')
 router.register('front_recommend',views.frontPageGoodsVewSet,basename="front_recommend")
 router.register('cartitems', views.CartItemViewSet, basename='cartitems')
 router.register('orders', views.OrderViewSet, basename='orders')
+router.register('goods-view', views.GoodsTableViewSet, basename='goods-view')
 
 
 urlpatterns = [

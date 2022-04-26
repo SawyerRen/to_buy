@@ -10,9 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from .models import Category, Goods, CartItem, Order, OrderItem
+from .models import Category, Goods, CartItem, Order, OrderItem, GoodsTable
 from .serializers import CategorySerializer, GoodsSerializer, CartItemSerializer, AddCartItemSerializer, \
-    OrderSerializer, OrderItemSerializer, CreateOrderSerializer
+    OrderSerializer, OrderItemSerializer, CreateOrderSerializer, GoodsTableSerializer
 from store.pagination import DefaultPagination
 from .filters import GoodsFilter
 
@@ -36,7 +36,25 @@ class CategoryViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+name_map = {'name':'name', 'description':'description',
+            'price':'price', 'category_id' :'category_id', 'brand':'brand',
+            'inventory' :'inventory', 'sales':'sales', 'image_url':'image_url',
+            'discount':'discount','is_deleted':'is_deleted', 'created_at':'created_at','updated_at':'updated_at'
+            }
+
+
+class GoodsTableViewSet(ModelViewSet):
+    sql = """
+    CALL GetGoods()
+    """
+    queryset = GoodsTable.objects.raw(sql)
+    serializer_class = GoodsTableSerializer
+
+
 class GoodsViewSet(ModelViewSet):
+    sql = """
+    CALL GetGoods()
+    """
     queryset = Goods.objects.all()
     serializer_class = GoodsSerializer
     pagination_class = DefaultPagination
@@ -96,6 +114,7 @@ class frontPageGoodsVewSet(ModelViewSet):
     order by G.sales desc
     limit 15"""
     queryset = Goods.objects.raw(sql_str)
+
     serializer_class = GoodsSerializer
 
 
@@ -124,6 +143,12 @@ class OrderViewSet(ModelViewSet):
             return Response(serializer.data)
         else:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def list(self, request, *args, **kwargs):
+        user_id = self.request.query_params.dict().get('user_id')
+        if user_id is None:
+            return Response(status=status.HTTP_400_BAD_REQUEST, headers={'No user_id': 'user_id must be provided'})
+        return super().list(request, *args, **kwargs)
 
     serializer_class = OrderSerializer
     queryset = Order.objects.all()
