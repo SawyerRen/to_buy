@@ -42,12 +42,10 @@ class BestSellerViewSet(ModelViewSet):
     serializer_class = GoodsSerializer
     pagination_class = DefaultPagination
 
-
-
     def get_queryset(self):
         category_id = self.request.query_params.dict().get('category_id')
         if category_id is None:
-            return Goods.objects.filter(sales__gt=1000)
+            return Goods.objects.filter(sales__gt=1800)
         category_id = int(category_id)
         sql = "CALL GetGoods({})".format(category_id)
         q = Goods.objects.raw(sql)
@@ -60,7 +58,7 @@ class GoodsViewSet(ModelViewSet):
     pagination_class = DefaultPagination
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['name', 'description']
-    ordering_fields = ['price']
+    ordering_fields = ['price','sales']
     filterset_class = GoodsFilter
 
     def destroy(self, request, pk):
@@ -145,10 +143,22 @@ class OrderViewSet(ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def list(self, request, *args, **kwargs):
-        user_id = self.request.query_params.dict().get('user_id')
-        if user_id is None:
+        uid = self.request.query_params.dict().get('user_id')
+        if uid is None:
             return Response(status=status.HTTP_400_BAD_REQUEST, headers={'No user_id': 'user_id must be provided'})
-        return super().list(request, *args, **kwargs)
+        q = Order.objects.filter(user__id=uid)
+        serializer = self.get_serializer(q, many=True)
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data)
 
     serializer_class = OrderSerializer
     queryset = Order.objects.all()

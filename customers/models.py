@@ -24,7 +24,7 @@ class User(BaseModel):
     password = models.CharField(max_length=255)
     phone_number = models.CharField(max_length=255)
     email = models.CharField(max_length=255, unique=True)
-    GENDER = [(1, 'Male'), (0, 'Female')]
+    GENDER = [(1, 'Male'), (2, 'Female')]
     gender = models.SmallIntegerField(choices=GENDER, default=0)
     membership = models.ForeignKey(Membership, null=True, on_delete=models.SET_NULL)
     membership_expire_time = models.DateTimeField(null=True)
@@ -60,3 +60,4 @@ class Payment(BaseModel):
     class Meta:
         managed = False
         db_table = 'Payment'
+

@@ -1,4 +1,6 @@
 # -*- coding = utf-8 -*-
+import decimal
+
 from rest_framework import serializers
 from django.db import transaction
 from customers.models import Payment
@@ -57,13 +59,19 @@ class OrderSerializer(serializers.ModelSerializer):
 
     id = serializers.IntegerField(read_only=True)
     orderitems = OrderItemSerializer(many=True, read_only=True)
-    # total_price = serializers.SerializerMethodField(method_name='get_total_price')
+    def get_total_price(self, order: Order):
+        tp = 0
+        for item in order.orderitems.all():
+            tp += item.quantity * item.order_price
+        return round(tp * decimal.Decimal(order.discount), 2)
+
+    total_price = serializers.SerializerMethodField(method_name='get_total_price')
 
 
     class Meta:
         model = Order
         fields = ['id', 'orderitems', 'user', 'status', 'discount', 'receiver_address',
-                  'payment', 'estimated_arrival_time', 'arrival_time']
+                  'payment', 'estimated_arrival_time', 'arrival_time', 'total_price']
 
 
 class CreateOrderSerializer(serializers.Serializer):
