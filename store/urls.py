@@ -9,9 +9,9 @@ router.register('categories', views.CategoryViewSet, basename='categories')
 router.register('goods', views.GoodsViewSet, basename='goods')
 router.register('front_recommend',views.frontPageGoodsVewSet,basename="front_recommend")
 router.register('cartitems', views.CartItemViewSet, basename='cartitems')
+router.register('orders', views.OrderViewSet, basename='orders')
+router.register('bestseller', views.BestSellerViewSet, basename='bestseller')
 
-# carts_router = routers.NestedDefaultRouter(router, 'carts', lookup='user')
-# carts_router.register('cartitems', views.CartItemViewSet, basename='cart-cartitems')
 
 
 urlpatterns = [
