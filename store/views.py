@@ -87,7 +87,9 @@ class CartItemViewSet(ModelViewSet):
         user_id = self.request.query_params.dict().get('user_id')
         if user_id is None:
             return Response(status=status.HTTP_400_BAD_REQUEST, headers={'No user_id':'user_id must be provided'})
-        return super().list(request, *args, **kwargs)
+        q = CartItem.objects.filter(user__id=user_id)
+        serializer = self.get_serializer(q, many=True)
+        return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):
         goods_id = self.request.data['goods']
